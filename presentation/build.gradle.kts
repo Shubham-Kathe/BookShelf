@@ -63,5 +63,13 @@ dependencies {
     implementation(libs.androidx.palette.ktx)
     implementation(project(":data"))
     implementation(project(":domain"))
+    //Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing) // For InstantTaskExecutorRule
+    testImplementation(libs.turbine) // Optional: testing Kotlin Flows
 
 }
