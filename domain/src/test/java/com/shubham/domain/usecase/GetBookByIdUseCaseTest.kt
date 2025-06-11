@@ -23,7 +23,6 @@ class GetBookByIdUseCaseTest {
     private lateinit var bookRepository: BookRepository
     private lateinit var logger: Logger
     private lateinit var getBookByIdUseCase: GetBookByIdUseCase
-
     private val fakeBook = Book(
         id = 1,
         title = "Frankenstein",
@@ -42,12 +41,8 @@ class GetBookByIdUseCaseTest {
 
     @Test
     fun `invoke emits loading and success when repository returns books`() = runTest {
-
-        // Arrange
         `when`(bookRepository.getBookById(1)).thenReturn(
             flow { emit(listOf(fakeBook)) })
-
-        // Act & Assert
         getBookByIdUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val success = awaitItem()
@@ -55,41 +50,31 @@ class GetBookByIdUseCaseTest {
             assert((success as Resource.Success).data == listOf(fakeBook))
             awaitComplete()
         }
-
         verify(bookRepository).getBookById(1)
         verifyNoMoreInteractions(logger)
     }
 
     @Test
     fun `when repository returns empty list, emit Success with empty data`() = runTest {
-
-        // Arrange
         `when`(bookRepository.getBookById(1)).thenReturn(
             flow { emit(emptyList()) })
-
-        // Act & Assert
         getBookByIdUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
-
             val success = awaitItem()
             assert(success is Resource.Success)
             assert((success as Resource.Success).data.isEmpty())
 
             awaitComplete()
         }
-
         verify(bookRepository).getBookById(1)
         verifyNoMoreInteractions(logger)
     }
 
     @Test
     fun `invoke emits loading and error when repository throws exception`() = runTest {
-        // Arrange
         val errorMessage = "Network failure"
         `when`(bookRepository.getBookById(any())).thenReturn(
             flow { throw RuntimeException(errorMessage) })
-
-        // Act & Assert
         getBookByIdUseCase(99).test {
             assert(awaitItem() is Resource.Loading)
             val error = awaitItem()
@@ -97,7 +82,6 @@ class GetBookByIdUseCaseTest {
             assert((error as Resource.Error).errorMessage == errorMessage)
             awaitComplete()
         }
-
         verify(bookRepository).getBookById(99)
         verify(logger).e(eq("BookShelf"), eq("Failed to load books"), any())
     }

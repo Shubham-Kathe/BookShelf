@@ -1,22 +1,22 @@
-package com.shubham.presentation;
+package com.shubham.presentation
 
 import com.shubham.domain.common.Resource
 import com.shubham.domain.model.Book
-import com.shubham.domain.usecase.GetBooksUseCase;
+import com.shubham.domain.usecase.GetBooksUseCase
 import com.shubham.presentation.booklist.BookListViewModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import kotlinx.coroutines.ExperimentalCoroutinesApi;
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 
@@ -26,10 +26,8 @@ class BookListViewModelTest {
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
-
     private lateinit var getBooksUseCase: GetBooksUseCase
     private lateinit var viewModel: BookListViewModel
-
     private val fakeBook = Book(
         id = 1,
         title = "Frankenstein",
@@ -51,13 +49,9 @@ class BookListViewModelTest {
             emit(Resource.Loading)
             emit(Resource.Success(books))
         }
-
         whenever(getBooksUseCase.invoke(1)).thenReturn(flow)
-
         viewModel = BookListViewModel(getBooksUseCase)
-
         val state = viewModel.bookListState.first { !it.isLoading }
-
         assertEquals(books, state.books)
         assertFalse(state.isLoading)
         assertNull(state.error)
@@ -70,16 +64,11 @@ class BookListViewModelTest {
             emit(Resource.Loading)
             emit(Resource.Error(errorMessage))
         }
-
         whenever(getBooksUseCase.invoke(1)).thenReturn(flow)
-
         viewModel = BookListViewModel(getBooksUseCase)
-
         val state = viewModel.bookListState.first { !it.isLoading }
-
         assertEquals(errorMessage, state.error)
         assertTrue(state.books.isNullOrEmpty())
         assertFalse(state.isLoading)
     }
-
 }

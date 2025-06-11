@@ -1,13 +1,9 @@
 package com.shubham.data.mapper
 
-import com.shubham.data.remote.dto.AuthorsDto
 import com.shubham.data.remote.dto.BookDto
 import com.shubham.data.remote.dto.BookListDto
 import com.shubham.domain.model.Book
 import com.shubham.domain.model.BookList
-
-
-fun AuthorsDto.toName(): String = name
 
 fun BookDto.toDomain(): Book {
     return Book(

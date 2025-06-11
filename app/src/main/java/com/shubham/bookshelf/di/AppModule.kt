@@ -21,7 +21,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetBookByIdsUseCases(repository: BookRepository, logger: Logger): GetBookByIdUseCase =
+    fun provideGetBookByIdsUseCases(
+        repository: BookRepository,
+        logger: Logger
+    ): GetBookByIdUseCase =
         GetBookByIdUseCase(repository, logger)
-
 }

@@ -36,18 +36,24 @@ fun BookListScreen(
             fontFamily = FontFamily.Monospace,
             modifier = Modifier.padding(top = 32.dp)
         )
-        if (bookListState.isLoading) {
-            LoadingIndicator()
-        } else if (bookListState.error != null) {
-            RetryView {
-                viewModel.retryLoadBook()
+        when {
+            bookListState.isLoading -> {
+                LoadingIndicator()
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(bookListState.books) { book ->
-                    BookCard(book, onBookClick)
+
+            bookListState.error != null || bookListState.books.isEmpty() -> {
+                RetryView {
+                    viewModel.retryLoadBook()
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(bookListState.books) { book ->
+                        BookCard(book, onBookClick)
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class BookRepositoryImpl(private val gutendexApi: GutendexApi) : BookRepository {
+
     override fun getBookList(page: Int): Flow<List<Book>> = flow {
         val books = gutendexApi.getBookList(page).results.map { it.toDomain() }
         emit(books)
@@ -19,7 +20,5 @@ class BookRepositoryImpl(private val gutendexApi: GutendexApi) : BookRepository 
         val books = gutendexApi.getBookByIds(ids).results.map { it.toDomain() }
         emit(books)
     }.flowOn(Dispatchers.IO)
-
-
 }
 

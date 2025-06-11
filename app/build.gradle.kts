@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     alias(libs.plugins.dagger.hilt.android)
-
 }
 
 android {
@@ -17,16 +16,13 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -43,12 +39,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
     }
-
-
 }
 
 dependencies {
-
+    implementation(project(":presentation"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,19 +58,6 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-
-
-    implementation(project(":presentation"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
-
-
-
-
-
-
-
-
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

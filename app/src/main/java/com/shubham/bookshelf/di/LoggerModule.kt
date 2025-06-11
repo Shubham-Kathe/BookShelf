@@ -15,6 +15,6 @@ object LoggerModule {
     @Provides
     @Singleton
     fun provideLogger(): Logger {
-         return DebugLogger()
+        return DebugLogger()
     }
 }

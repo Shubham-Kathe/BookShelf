@@ -11,15 +11,16 @@ class GetBooksUseCase(
     private val bookRepository: BookRepository,
     private val logger: Logger
 ) {
+
     operator fun invoke(page: Int): Flow<Resource<List<Book>>> = flow {
         emit(Resource.Loading)
         try {
-           bookRepository.getBookList(page).collect{ books->
-               emit(Resource.Success(books))
-           }
-        } catch ( e: Exception) {
+            bookRepository.getBookList(page).collect { books ->
+                emit(Resource.Success(books))
+            }
+        } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Unknown error"))
-            logger.e("BookShelf","Failed to load books", e)
+            logger.e("BookShelf", "Failed to load books", e)
         }
     }
 }

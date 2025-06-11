@@ -23,7 +23,6 @@ class BookUseCaseTest {
     private lateinit var bookRepository: BookRepository
     private lateinit var logger: Logger
     private lateinit var getBooksUseCase: GetBooksUseCase
-
     private val fakeBook = Book(
         id = 1,
         title = "Frankenstein",
@@ -42,12 +41,8 @@ class BookUseCaseTest {
 
     @Test
     fun `invoke emits loading and success when repository returns books`() = runTest {
-
-        // Arrange
         `when`(bookRepository.getBookList(1)).thenReturn(
             flow { emit(listOf(fakeBook)) })
-
-        // Act & Assert
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val success = awaitItem()
@@ -55,41 +50,30 @@ class BookUseCaseTest {
             assert((success as Resource.Success).data == listOf(fakeBook))
             awaitComplete()
         }
-
         verify(bookRepository).getBookList(1)
         verifyNoMoreInteractions(logger)
     }
 
     @Test
     fun `when repository returns empty list, emit Success with empty data`() = runTest {
-
-        // Arrange
         `when`(bookRepository.getBookList(1)).thenReturn(
             flow { emit(emptyList()) })
-
-        // Act & Assert
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
-
             val success = awaitItem()
             assert(success is Resource.Success)
             assert((success as Resource.Success).data.isEmpty())
-
             awaitComplete()
         }
-
         verify(bookRepository).getBookList(1)
         verifyNoMoreInteractions(logger)
     }
 
     @Test
     fun `invoke emits loading and error when repository throws exception`() = runTest {
-        // Arrange
         val errorMessage = "Network failure"
         `when`(bookRepository.getBookList(any())).thenReturn(
             flow { throw RuntimeException(errorMessage) })
-
-        // Act & Assert
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val error = awaitItem()
@@ -97,7 +81,6 @@ class BookUseCaseTest {
             assert((error as Resource.Error).errorMessage == errorMessage)
             awaitComplete()
         }
-
         verify(bookRepository).getBookList(1)
         verify(logger).e(eq("BookShelf"), eq("Failed to load books"), any())
     }

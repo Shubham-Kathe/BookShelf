@@ -61,5 +61,4 @@ class BookDetailsViewModel @Inject constructor(
     fun retryLoadBook() {
         loadBookDetails()
     }
-
 }

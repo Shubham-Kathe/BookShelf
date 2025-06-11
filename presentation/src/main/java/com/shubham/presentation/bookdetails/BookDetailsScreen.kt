@@ -53,7 +53,6 @@ import com.shubham.presentation.common.BookListState
 import com.shubham.presentation.common.components.LoadingIndicator
 import com.shubham.presentation.common.components.RetryView
 
-
 @Composable
 fun BookDetailsScreen(
     viewModel: BookDetailsViewModel = hiltViewModel(), onCloseClick: () -> Unit
@@ -68,17 +67,21 @@ fun BookDetailsScreen(
             bannerColor.copy(alpha = 0.9f), bannerColor.copy(alpha = 0.2f)
         )
     )
-    if (bookListState.isLoading) {
-        LoadingIndicator()
-    } else if (bookListState.error != null) {
-        RetryView {
-            viewModel.retryLoadBook()
+    when {
+        bookListState.isLoading -> {
+            LoadingIndicator()
         }
-    } else {
-        DetailsScreen(context, bookListState, imageUrl, previewUrl, gradientBrush, onCloseClick)
+
+        bookListState.error != null || bookListState.books.isEmpty() -> {
+            RetryView {
+                viewModel.retryLoadBook()
+            }
+        }
+
+        else -> {
+            DetailsScreen(context, bookListState, imageUrl, previewUrl, gradientBrush, onCloseClick)
+        }
     }
-
-
 }
 
 @Composable
@@ -151,7 +154,7 @@ fun DetailsScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = bookListState.books.firstOrNull()?.summary ?: "No description available.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))

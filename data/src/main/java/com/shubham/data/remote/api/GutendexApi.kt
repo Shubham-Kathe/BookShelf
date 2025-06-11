@@ -15,5 +15,4 @@ interface GutendexApi {
     suspend fun getBookByIds(
         @Query("ids") ids: Int,
     ): BookListDto
-
 }

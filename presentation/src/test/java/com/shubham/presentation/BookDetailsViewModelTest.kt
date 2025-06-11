@@ -28,12 +28,10 @@ class BookDetailsViewModelTest {
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
-
     private lateinit var getBookByIdUseCase: GetBookByIdUseCase
     private lateinit var viewModel: BookDetailsViewModel
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var logger: Logger
-
     private val fakeBook = Book(
         id = 1,
         title = "Frankenstein",
@@ -57,13 +55,9 @@ class BookDetailsViewModelTest {
             emit(Resource.Loading)
             emit(Resource.Success(books))
         }
-
         whenever(getBookByIdUseCase.invoke(1)).thenReturn(flow)
-
         viewModel = BookDetailsViewModel(savedStateHandle, getBookByIdUseCase, logger)
-
         val state = viewModel.bookListState.first { !it.isLoading }
-
         assertEquals(books, state.books)
         assertFalse(state.isLoading)
         assertNull(state.error)
@@ -76,16 +70,11 @@ class BookDetailsViewModelTest {
             emit(Resource.Loading)
             emit(Resource.Error(errorMessage))
         }
-
         whenever(getBookByIdUseCase.invoke(1)).thenReturn(flow)
-
         viewModel = BookDetailsViewModel(savedStateHandle, getBookByIdUseCase, logger)
-
         val state = viewModel.bookListState.first { !it.isLoading }
-
         assertEquals(errorMessage, state.error)
         assertTrue(state.books.isNullOrEmpty())
         assertFalse(state.isLoading)
     }
-
 }

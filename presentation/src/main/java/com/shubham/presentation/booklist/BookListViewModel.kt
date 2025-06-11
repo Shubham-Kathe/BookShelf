@@ -20,7 +20,6 @@ class BookListViewModel @Inject constructor(
     private var _bookListState = MutableStateFlow(BookListState())
     val bookListState: StateFlow<BookListState>
         get() = _bookListState
-
     private var currentPage = 1
 
     init {

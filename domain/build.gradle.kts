@@ -9,8 +9,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -18,8 +16,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -33,14 +30,11 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.androidx.core.testing) // For InstantTaskExecutorRule
-    testImplementation(libs.turbine) // Optional: testing Kotlin Flows
-
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.turbine)
 }

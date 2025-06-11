@@ -30,10 +30,11 @@ import com.shubham.domain.model.Book
 fun BookCard(
     book: Book, onBookClick: (Int) -> Unit
 ) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onBookClick(book.id) }
-        .padding(vertical = 4.dp), elevation = CardDefaults.cardElevation(4.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onBookClick(book.id) }
+            .padding(vertical = 4.dp), elevation = CardDefaults.cardElevation(4.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

@@ -1,4 +1,5 @@
 package com.shubham.bookshelf.di
+
 import com.shubham.data.remote.api.GutendexApi
 import dagger.Module
 import dagger.Provides
@@ -21,5 +22,4 @@ object NetworkModule {
     @Singleton
     fun provideGutendexApi(retrofit: Retrofit): GutendexApi =
         retrofit.create(GutendexApi::class.java)
-
 }

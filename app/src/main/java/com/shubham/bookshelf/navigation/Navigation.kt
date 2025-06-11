@@ -9,12 +9,10 @@ import androidx.navigation.navArgument
 import com.shubham.presentation.bookdetails.BookDetailsScreen
 import com.shubham.presentation.booklist.BookListScreen
 
-
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = ScreenRoute.BookList.route) {
-
         composable(route = ScreenRoute.BookList.route) {
             BookListScreen(
                 onBookClick = { bookId ->
