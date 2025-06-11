@@ -8,7 +8,6 @@ import com.shubham.data.remote.dto.BookListDto
 import com.shubham.data.remote.dto.FormatsDto
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -51,13 +50,10 @@ class BookRepositoryImplTest {
         val expectedBook = bookDto.toDomain()
         whenever(gutendexApi.getBookList(page)).thenReturn(
             BookListDto(
-                1,
-                "",
-                "",
-                results = listOf(bookDto)
+                1, "", "", results = listOf(bookDto)
             )
         )
-        val result = repository.getBookList(page).first()
+        val result = repository.getBookList(page)
         assertEquals(listOf(expectedBook), result)
         verify(gutendexApi).getBookList(page)
     }
@@ -68,7 +64,7 @@ class BookRepositoryImplTest {
         val exception = RuntimeException("API Error")
         whenever(gutendexApi.getBookList(page)).thenThrow(exception)
         assertFailsWith<RuntimeException> {
-            repository.getBookList(page).collect {}
+            repository.getBookList(page)
         }
         verify(gutendexApi).getBookList(page)
     }
@@ -90,13 +86,10 @@ class BookRepositoryImplTest {
         val expectedBook = bookDto.toDomain()
         whenever(gutendexApi.getBookByIds(ids)).thenReturn(
             BookListDto(
-                1,
-                "",
-                "",
-                results = listOf(bookDto)
+                1, "", "", results = listOf(bookDto)
             )
         )
-        val result = repository.getBookById(ids).first()
+        val result = repository.getBookById(ids)
         assertEquals(listOf(expectedBook), result)
         verify(gutendexApi).getBookByIds(ids)
     }
@@ -107,7 +100,7 @@ class BookRepositoryImplTest {
         val exception = RuntimeException("API Error")
         whenever(gutendexApi.getBookByIds(ids)).thenThrow(exception)
         assertFailsWith<RuntimeException> {
-            repository.getBookById(ids).collect {}
+            repository.getBookById(ids)
         }
         verify(gutendexApi).getBookByIds(ids)
     }

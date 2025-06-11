@@ -6,7 +6,6 @@ import com.shubham.domain.common.Resource
 import com.shubham.domain.model.Book
 import com.shubham.domain.repository.BookRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -41,8 +40,7 @@ class BookUseCaseTest {
 
     @Test
     fun `invoke emits loading and success when repository returns books`() = runTest {
-        `when`(bookRepository.getBookList(1)).thenReturn(
-            flow { emit(listOf(fakeBook)) })
+        `when`(bookRepository.getBookList(1)).thenReturn(listOf(fakeBook))
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val success = awaitItem()
@@ -56,8 +54,7 @@ class BookUseCaseTest {
 
     @Test
     fun `when repository returns empty list, emit Success with empty data`() = runTest {
-        `when`(bookRepository.getBookList(1)).thenReturn(
-            flow { emit(emptyList()) })
+        `when`(bookRepository.getBookList(1)).thenReturn(emptyList())
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val success = awaitItem()
@@ -72,8 +69,7 @@ class BookUseCaseTest {
     @Test
     fun `invoke emits loading and error when repository throws exception`() = runTest {
         val errorMessage = "Network failure"
-        `when`(bookRepository.getBookList(any())).thenReturn(
-            flow { throw RuntimeException(errorMessage) })
+        `when`(bookRepository.getBookList(any())).thenThrow(RuntimeException(errorMessage))
         getBooksUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val error = awaitItem()
