@@ -33,7 +33,7 @@ class BookListViewModel @Inject constructor(
             when (result) {
                 is Resource.Loading -> {
                     _bookListState.update {
-                        BookListState().copy(
+                       it.copy(
                             isLoading = true, error = null
                         )
                     }
@@ -41,7 +41,7 @@ class BookListViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _bookListState.update {
-                        BookListState().copy(
+                        it.copy(
                             books = result.data, isLoading = false, error = null
                         )
                     }
@@ -49,7 +49,7 @@ class BookListViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     _bookListState.update {
-                        BookListState().copy(
+                        it.copy(
                             error = result.errorMessage, isLoading = false
                         )
                     }
