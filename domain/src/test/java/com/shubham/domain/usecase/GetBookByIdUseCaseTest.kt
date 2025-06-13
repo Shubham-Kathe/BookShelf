@@ -3,12 +3,15 @@ package com.shubham.domain.usecase
 import app.cash.turbine.test
 import com.shubham.domain.common.Logger
 import com.shubham.domain.common.Resource
+import com.shubham.domain.error.BookShelfError
 import com.shubham.domain.model.Book
 import com.shubham.domain.repository.BookRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -68,17 +71,16 @@ class GetBookByIdUseCaseTest {
     }
 
     @Test
-    fun `invoke emits loading and error when repository throws exception`() = runTest {
-        val errorMessage = "Network failure"
-        `when`(bookRepository.getBookById(any())).thenThrow(RuntimeException(errorMessage))
-        getBookByIdUseCase(99).test {
+    fun `invoke emits loading and error when repository throws NetworkError`() = runTest {
+        doAnswer { throw BookShelfError.NetworkError }.`when`(bookRepository).getBookById(any())
+        getBookByIdUseCase(1).test {
             assert(awaitItem() is Resource.Loading)
             val error = awaitItem()
             assert(error is Resource.Error)
-            assert((error as Resource.Error).errorMessage == errorMessage)
+            assertEquals("Network error", (error as Resource.Error).errorMessage)
             awaitComplete()
         }
-        verify(bookRepository).getBookById(99)
-        verify(logger).e(eq("BookShelf"), eq("Failed to load books"), any())
+        verify(bookRepository).getBookById(1)
+        verify(logger).e(eq("BookShelf"), eq("Check your internet connection"), any())
     }
 }

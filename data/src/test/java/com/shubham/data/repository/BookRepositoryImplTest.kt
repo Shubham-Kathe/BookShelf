@@ -6,18 +6,24 @@ import com.shubham.data.remote.dto.AuthorsDto
 import com.shubham.data.remote.dto.BookDto
 import com.shubham.data.remote.dto.BookListDto
 import com.shubham.data.remote.dto.FormatsDto
+import com.shubham.domain.error.BookShelfError
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
+import org.mockito.Mockito.doThrow
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import retrofit2.HttpException
+import retrofit2.Response
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -59,14 +65,27 @@ class BookRepositoryImplTest {
     }
 
     @Test
-    fun `getBookList throws exception when API fails`() = runTest {
+    fun `getBookList throws DataNotFound when HttpException with 404 occurs`() = runTest {
         val page = 1
-        val exception = RuntimeException("API Error")
-        whenever(gutendexApi.getBookList(page)).thenThrow(exception)
-        assertFailsWith<RuntimeException> {
+        val response = Response.error<Any>(404, ResponseBody.create(null, "Not Found"))
+        val httpException = HttpException(response)
+        doThrow(httpException).whenever(gutendexApi).getBookList(page)
+        val exception = assertFailsWith<BookShelfError.DataNotFound> {
             repository.getBookList(page)
         }
-        verify(gutendexApi).getBookList(page)
+        assertTrue(exception is BookShelfError.DataNotFound)
+    }
+
+    @Test
+    fun `getBookList throws ServerError when HttpException with 500 occurs`() = runTest {
+        val page = 1
+        val response = Response.error<Any>(500, ResponseBody.create(null, "Server Error"))
+        val httpException = HttpException(response)
+        doThrow(httpException).whenever(gutendexApi).getBookList(page)
+        val exception = assertFailsWith<BookShelfError.ServerError> {
+            repository.getBookList(page)
+        }
+        assertTrue(exception is BookShelfError.ServerError)
     }
 
     @Test
@@ -95,13 +114,26 @@ class BookRepositoryImplTest {
     }
 
     @Test
-    fun `getBookById throws exception when API fails`() = runTest {
-        val ids = 1
-        val exception = RuntimeException("API Error")
-        whenever(gutendexApi.getBookByIds(ids)).thenThrow(exception)
-        assertFailsWith<RuntimeException> {
-            repository.getBookById(ids)
+    fun `getBookById throws DataNotFound when HttpException with 404 occurs`() = runTest {
+        val bookId = 123
+        val response = Response.error<Any>(404, ResponseBody.create(null, "Not Found"))
+        val httpException = HttpException(response)
+        doThrow(httpException).whenever(gutendexApi).getBookByIds(bookId)
+        val exception = assertFailsWith<BookShelfError.DataNotFound> {
+            repository.getBookById(bookId)
         }
-        verify(gutendexApi).getBookByIds(ids)
+        assertTrue(exception is BookShelfError.DataNotFound)
+    }
+
+    @Test
+    fun `getBookById throws ServerError when HttpException with 500 occurs`() = runTest {
+        val bookId = 123
+        val response = Response.error<Any>(500, ResponseBody.create(null, "Server Error"))
+        val httpException = HttpException(response)
+        doThrow(httpException).whenever(gutendexApi).getBookByIds(bookId)
+        val exception = assertFailsWith<BookShelfError.ServerError> {
+            repository.getBookById(bookId)
+        }
+        assertTrue(exception is BookShelfError.ServerError)
     }
 }

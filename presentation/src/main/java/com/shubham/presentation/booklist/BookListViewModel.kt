@@ -18,9 +18,7 @@ class BookListViewModel @Inject constructor(
     private val getBooksUseCase: GetBooksUseCase
 ) : ViewModel() {
 
-    // Mutable state internally(within viewModel) using immutable state model(BookListState)
-    private var _bookListState = MutableStateFlow(BookListState())
-    // Exposed as immutable to view
+    private val _bookListState = MutableStateFlow(BookListState())
     val bookListState: StateFlow<BookListState> = _bookListState
     private var currentPage = 1
 
@@ -33,7 +31,7 @@ class BookListViewModel @Inject constructor(
             when (result) {
                 is Resource.Loading -> {
                     _bookListState.update {
-                       it.copy(
+                        it.copy(
                             isLoading = true, error = null
                         )
                     }

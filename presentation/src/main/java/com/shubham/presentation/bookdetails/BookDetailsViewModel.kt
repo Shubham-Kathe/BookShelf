@@ -22,7 +22,7 @@ class BookDetailsViewModel @Inject constructor(
     private val logger: Logger
 ) : ViewModel() {
 
-    private var _bookListState = MutableStateFlow(BookListState())
+    private val _bookListState = MutableStateFlow(BookListState())
     val bookListState: StateFlow<BookListState> = _bookListState
 
     init {
@@ -43,7 +43,7 @@ class BookDetailsViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _bookListState.update {
-                       it.copy(
+                        it.copy(
                             books = result.data, isLoading = false, error = null
                         )
                     }
